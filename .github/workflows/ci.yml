@@ -1,31 +1,31 @@
-name: CI Pipeline
+name: .NET Core CI
 
 on:
   push:
-    branches:
+    branches: 
       - main
   pull_request:
-    branches:
+    branches: 
       - main
 
 jobs:
   build:
     runs-on: ubuntu-latest
-
+    
     steps:
-    - name: Check out repository
+    - name: Checkout code
       uses: actions/checkout@v3
 
-    - name: Set up Python
-      uses: actions/setup-python@v4
+    - name: Setup .NET Core
+      uses: actions/setup-dotnet@v3
       with:
-        python-version: '3.x'
+        dotnet-version: '7.x' # Utilize a versão do .NET Core usada no seu projeto
 
-    - name: Install dependencies
-      run: |
-        python -m pip install --upgrade pip
-        pip install -r requirements.txt
+    - name: Restore dependencies
+      run: dotnet restore
+
+    - name: Build the project
+      run: dotnet build --configuration Release --no-restore
 
     - name: Run tests
-      run: |
-        pytest
+      run: dotnet test --no-restore --verbosity normal
